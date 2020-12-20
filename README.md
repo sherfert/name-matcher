@@ -10,3 +10,8 @@ Try to find a name for your kid using a Tinder like interface where both parents
   * `nvm use`
   * `npm install`
   * `node app.js` starts the API
+* Run the frontend.
+  * `cd client`
+  * `nvm use`
+  * `npm install`
+  * `npm run start` in development.
