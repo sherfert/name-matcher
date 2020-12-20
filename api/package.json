@@ -1,0 +1,35 @@
+{
+  "name": "name-matcher",
+  "version": "0.0.1",
+  "author": {
+    "name": "Satia Herfert",
+    "email": "satiaherfert@gmx.de"
+  },
+  "description": "Try to find a name for your kid using a Tinder like interface where both parents can rate names.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sherfert/name-matcher"
+  },
+  "keywords": [
+    "node",
+    "neo4j",
+    "express",
+    "api",
+    "http",
+    "rest",
+    "server"
+  ],
+  "engines": {
+    "node": ">=0.11.x",
+    "npm": "1.2.x"
+  },
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "lodash": "^4.17.20",
+    "method-override": "^3.0.0",
+    "nconf": "^0.10.0",
+    "neo4j-driver": "^4.2.1"
+  }
+}
