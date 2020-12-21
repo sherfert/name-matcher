@@ -43,7 +43,10 @@ startup.createDBConstraints();
 //api routes
 api.get("/people", routes.people.list);
 api.get("/people/:name", routes.people.findByName);
-api.post("/people/:name", routes.people.create)
+api.post("/people/:name", routes.people.create);
+
+api.get("/names/:name", routes.names.get);
+api.post("/names/:name", routes.names.create);
 
 //api error handler
 api.use(function (err, req, res, next) {
