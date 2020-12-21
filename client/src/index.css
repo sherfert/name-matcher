@@ -12,6 +12,10 @@ code {
     monospace;
 }
 
+h1 {
+  font-size: 5vmin;
+}
+
 .person {
   margin: 1vmin;
   width: 30vmin;

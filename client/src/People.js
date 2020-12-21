@@ -43,6 +43,7 @@ class People extends React.Component {
             <div>
                 <AlertPopup ref={this.alert}/>
             </div>
+            <h1>Who are you?</h1>
             <div>
                 {persons}
                 <Popup
