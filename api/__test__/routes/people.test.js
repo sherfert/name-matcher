@@ -27,6 +27,14 @@ afterAll(done => {
     return server && server.close(done);
 });
 
+afterEach(async done => {
+    const session = dbUtils.driver.session();
+    await session.writeTransaction(txc =>
+        txc.run('MATCH (n) DETACH DELETE n')
+    );
+    done();
+});
+
 
 it("Get all people", async done => {
     const response = await agent.get(`${apiPath}/people/`);
