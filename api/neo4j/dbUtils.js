@@ -15,3 +15,4 @@ exports.getSession = function (context) {
     return context.neo4jSession;
   }
 };
+exports.driver = driver;

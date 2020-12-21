@@ -23,11 +23,19 @@ const getByName = function (session, name) {
 // get all people
 const getAll = function (session) {
   return session.readTransaction(txc =>
-      txc.run('MATCH (person:Person) RETURN person')
+      txc.run('MATCH (person:Person) RETURN person AS person')
     ).then(result => result.records.map(r => new Person(r.get('person'))));
+};
+
+// add a new person
+const create = function (session, name) {
+  return session.writeTransaction(txc =>
+      txc.run('CREATE (person:Person {name: $name}) RETURN person AS person', {name: name})
+  ).then(result => result.records.map(r => new Person(r.get('person'))));
 };
 
 module.exports = {
   getAll: getAll,
-  getByName: getByName
+  getByName: getByName,
+  create: create
 };

@@ -16,3 +16,18 @@ exports.findByName = function (req, res, next) {
     .then(response => writeResponse(res, response))
     .catch(next);
 };
+
+exports.create = function (req, res, next) {
+  const name = req.params.name;
+  if (!name) throw {message: 'Invalid name', status: 400};
+
+  People.create(dbUtils.getSession(req), name)
+      .then(response => writeResponse(res, response))
+      .catch(r => {
+        if (r.message.includes("already exists with label `Person` and property `name`")) {
+          next({message: 'Name already exists.', status: 400});
+        } else {
+          next(r);
+        }
+      });
+};
