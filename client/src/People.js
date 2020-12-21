@@ -3,6 +3,7 @@ import Popup from 'reactjs-popup';
 import settings from './config/settings';
 import Person from "./Person";
 import TextForm from "./forms/TextForm";
+import AlertPopup from "./forms/AlertPopup";
 
 const axios = require('axios').default;
 
@@ -14,24 +15,28 @@ class People extends React.Component {
         this.state = {
             names: []
         };
+        this.alert = React.createRef();
         this.fetchNames()
     }
 
     fetchNames ()  {
         axios.get(`${apiBaseURL}/people/`)
-            .then(resp => this.setState({names: resp.data.map(person => person.name)}))
-            .catch(err => console.log(err));
+            .then(resp => this.setState(state => ({...state, names: resp.data.map(person => person.name)})))
+            .catch(err => {if (this.alert.current) {this.alert.current.handleError(err);} else {console.log(err);}});
     }
 
     addPerson(name) {
         axios.post(`${apiBaseURL}/people/${name}`)
             .then(() => this.fetchNames())
-            .catch(err => console.log(err));
+            .catch(err => {if (this.alert.current) {this.alert.current.handleError(err);} else {console.log(err);}});
     }
 
     render() {
         const persons = this.state.names.map(name => <Person name={name} />);
         return <>
+            <div>
+                <AlertPopup ref={this.alert}/>
+            </div>
             <div>
                 {persons}
                 <Popup
@@ -45,7 +50,6 @@ class People extends React.Component {
                                 <TextForm submitted={(name) => {
                                     close();
                                     this.addPerson(name);
-
                                 }}/>
                             </div>
                         </div>
