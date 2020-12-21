@@ -25,7 +25,7 @@ exports.create = function (req, res, next) {
       .then(response => writeResponse(res, response))
       .catch(r => {
         if (r.message.includes("already exists with label `Person` and property `name`")) {
-          next({message: 'Name already exists.', status: 400});
+          next({message: 'User already exists.', status: 400});
         } else {
           next(r);
         }

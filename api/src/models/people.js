@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const Person = require('../models/neo4j/person');
+const Person = require('./neo4j/person');
 
 // get a single person by id
 const getByName = function (session, name) {

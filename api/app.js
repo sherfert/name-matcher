@@ -1,13 +1,13 @@
 require("dotenv").config();
 
 const express = require("express"),
-    routes = require("./routes"),
+    routes = require("./src/routes"),
     nconf = require("./config"),
     methodOverride = require("method-override"),
     bodyParser = require("body-parser"),
-    neo4jSessionCleanup = require("./middlewares/neo4jSessionCleanup"),
-    writeError = require("./helpers/response").writeError,
-    dbUtils = require('./neo4j/dbUtils');
+    neo4jSessionCleanup = require("./src/middlewares/neo4jSessionCleanup"),
+    writeError = require("./src/helpers/response").writeError,
+    startup = require('./src/neo4j/startup');
 
 const app = express(),
     api = express();
@@ -38,10 +38,7 @@ api.use(function (req, res, next) {
 api.use(neo4jSessionCleanup);
 
 // Create constraints and indexes
-const session = dbUtils.driver.session();//getSession(api.request);
-session.writeTransaction(txc =>
-    txc.run("CREATE CONSTRAINT person_name IF NOT EXISTS ON (p:Person) ASSERT (p.name) IS NODE KEY")
-).catch(err => console.log(err));
+startup.createDBConstraints();
 
 //api routes
 api.get("/people", routes.people.list);
@@ -55,8 +52,4 @@ api.use(function (err, req, res, next) {
   } else next(err);
 });
 
-app.listen(app.get("port"), () => {
-  console.log(
-    "Express server listening on port " + app.get("port")
-  );
-});
+module.exports = app;

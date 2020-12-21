@@ -31,5 +31,19 @@
     "method-override": "^3.0.0",
     "nconf": "^0.10.0",
     "neo4j-driver": "^4.2.1"
+  },
+  "devDependencies": {
+    "jest": "^26.6.3",
+    "supertest": "^6.0.1"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "coveragePathIgnorePatterns": [
+      "/node_modules/"
+    ]
+  },
+  "scripts": {
+    "start": "node start.js",
+    "test": "jest --forceExit"
   }
 }

@@ -1,7 +1,10 @@
 {
-  "name": "client",
-  "version": "0.1.0",
-  "private": true,
+  "name": "name-matcher-client",
+  "version": "0.0.1",
+  "author": {
+    "name": "Satia Herfert",
+    "email": "satiaherfert@gmx.de"
+  },
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
@@ -15,8 +18,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "test": "react-scripts test"
   },
   "eslintConfig": {
     "extends": "react-app"
