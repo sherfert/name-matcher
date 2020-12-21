@@ -18,13 +18,15 @@ class TextForm extends React.Component {
     handleSubmit(event) {
         event.preventDefault();
         this.props.submitted(this.state.value);
+        this.setState({value: ''});
     }
+
 
     render() {
         return (
             <form onSubmit={this.handleSubmit}>
                 <input type="text" value={this.state.value} onChange={this.handleChange}/>
-                <input type="submit" value="Submit"/>
+                <input type="submit" value={this.props.buttonText}/>
             </form>
         );
     }

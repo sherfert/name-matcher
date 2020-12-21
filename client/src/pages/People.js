@@ -1,15 +1,22 @@
 import React from 'react';
 import Popup from 'reactjs-popup';
-import settings from './config/settings';
-import Person from "./Person";
-import TextForm from "./forms/TextForm";
-import AlertPopup from "./forms/AlertPopup";
+import settings from '../config/settings';
+import TextForm from "../forms/TextForm";
+import AlertPopup from "../forms/AlertPopup";
 import ReactDOM from "react-dom";
 import MainPage from "./MainPage";
 
 const axios = require('axios').default;
 
 const {apiBaseURL} = settings;
+
+function Person(props) {
+    return (
+        <div onClick={props.onClick} className="person">
+            {props.name}
+        </div>
+    );
+}
 
 class People extends React.Component {
     constructor(props) {
@@ -54,7 +61,7 @@ class People extends React.Component {
                         <div className="modal">
                             <div className="header"> Add a new user</div>
                             <div className="content">
-                                <TextForm submitted={(name) => {
+                                <TextForm buttonText={"Submit"} submitted={(name) => {
                                     close();
                                     this.addPerson(name);
                                 }}/>

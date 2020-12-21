@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import People from './People';
+import People from './pages/People';
 import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render(<People />, document.getElementById('root'));
