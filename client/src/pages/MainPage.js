@@ -5,6 +5,7 @@ import Tab from "@material-ui/core/Tab";
 import TabContext from "@material-ui/lab/TabContext";
 import TabList from "@material-ui/lab/TabList";
 import Import from "./Import";
+import Search from "./Search";
 
 class MainPage extends React.Component {
     constructor(props) {
@@ -28,7 +29,7 @@ class MainPage extends React.Component {
                         </TabList>
                     </AppBar>
                     <TabPanel value="rate">Rate</TabPanel>
-                    <TabPanel value="search">Search</TabPanel>
+                    <TabPanel value="search"><Search /></TabPanel>
                     <TabPanel value="matches">Matches</TabPanel>
                     <TabPanel value="import"><Import /></TabPanel>
                 </TabContext>

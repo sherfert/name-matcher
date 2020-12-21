@@ -7,29 +7,33 @@ const axios = require('axios').default;
 
 const {apiBaseURL} = settings;
 
-class Import extends React.Component {
+class Search extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            names: []
         };
         this.alert = React.createRef();
     }
 
-    addName(name) {
-        axios.post(`${apiBaseURL}/names/${name}`)
+    findName(name) {
+        axios.get(`${apiBaseURL}/names/${name}`)
+            .then(resp => this.setState(state => ({...state, names: [resp.data.name]})))
             .catch(err => {if (this.alert.current) {this.alert.current.handleError(err);} else {console.log(err);}});
     }
 
     render() {
+        const names = this.state.names.map(name => name);
         return <>
             <div>
                 <AlertPopup ref={this.alert}/>
             </div>
-            <TextForm buttonText={"Add single name"} submitted={(name) => {
-                this.addName(name);
+            <TextForm buttonText={"Search"} submitted={(name) => {
+                this.findName(name);
             }}/>
+            <div>{names}</div>
         </>
     }
 }
 
-export default Import;
+export default Search;
