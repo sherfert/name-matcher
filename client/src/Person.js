@@ -2,7 +2,7 @@ import React from 'react';
 
 function Person(props) {
     return (
-        <div className="person">
+        <div onClick={props.onClick} className="person">
             {props.name}
         </div>
     );

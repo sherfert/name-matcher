@@ -4,6 +4,8 @@ import settings from './config/settings';
 import Person from "./Person";
 import TextForm from "./forms/TextForm";
 import AlertPopup from "./forms/AlertPopup";
+import ReactDOM from "react-dom";
+import MainPage from "./MainPage";
 
 const axios = require('axios').default;
 
@@ -31,8 +33,12 @@ class People extends React.Component {
             .catch(err => {if (this.alert.current) {this.alert.current.handleError(err);} else {console.log(err);}});
     }
 
+    goToMainPageForPerson(name) {
+        ReactDOM.render(<MainPage name={name} />, document.getElementById('root'));
+    }
+
     render() {
-        const persons = this.state.names.map(name => <Person name={name} />);
+        const persons = this.state.names.map(name => <Person name={name} onClick={() => this.goToMainPageForPerson(name)} />);
         return <>
             <div>
                 <AlertPopup ref={this.alert}/>
