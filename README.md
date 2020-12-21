@@ -17,6 +17,9 @@ Try to find a name for your kid using a Tinder like interface where both parents
   * `npm start`
 * The website can now be reached: http://localhost:3000/
 
+For convenience, you can also run `./run-dev.sh`. 
+This requires that a neo4j database can be found in the `neo4j` folder. 
+
 ## Tests
 
 * Run server integration test with:
