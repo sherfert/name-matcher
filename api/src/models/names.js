@@ -1,23 +1,23 @@
 const Name = require('./neo4j/name');
 
-// get a single name
-const get = function (session, name) {
+// exact search
+const exactSearch = function (session, name) {
     return session.readTransaction(txc =>
         txc.run('MATCH (name:Name {name: $name}) RETURN name AS name', {name: name})
     ).then(result => result.records.map(r => new Name(r.get('name'))));
 };
 
 // get names by prefix
-const prefixSearch = function (session, prefix) {
+const prefixSearch = function (session, prefix, sexes) {
     return session.readTransaction(txc =>
-        txc.run('MATCH (name:Name) WHERE name.name STARTS WITH $prefix RETURN name AS name', {prefix: prefix})
+        txc.run('MATCH (name:Name) WHERE name.name STARTS WITH $prefix AND name.sex IN $sexes RETURN name AS name', {prefix: prefix, sexes: sexes})
     ).then(result => result.records.map(r => new Name(r.get('name'))));
 };
 
 // get names by suffix
-const suffixSearch = function (session, suffix) {
+const suffixSearch = function (session, suffix, sexes) {
     return session.readTransaction(txc =>
-        txc.run('MATCH (name:Name) WHERE name.name ENDS WITH $suffix RETURN name AS name', {suffix: suffix})
+        txc.run('MATCH (name:Name) WHERE name.name ENDS WITH $suffix AND name.sex IN $sexes RETURN name AS name', {suffix: suffix, sexes: sexes})
     ).then(result => result.records.map(r => new Name(r.get('name'))));
 };
 
@@ -37,7 +37,7 @@ const loadCSV = function (session, filename) {
 };
 
 module.exports = {
-    get: get,
+    exactSearch: exactSearch,
     prefixSearch: prefixSearch,
     suffixSearch: suffixSearch,
     create: create,

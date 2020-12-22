@@ -109,10 +109,11 @@ it("Exact search", async done => {
 it("Prefix search", async done => {
     await given.agent.post(`${apiPath}/names/Adam`).send({sex: "boy"});
     await given.agent.post(`${apiPath}/names/Berit`).send({sex: "girl"});
-    await given.agent.post(`${apiPath}/names/Berta`).send({sex: "girl"});
-    const response = await given.agent.get(`${apiPath}/names/B`).query({mode: "prefix"});
+    await given.agent.post(`${apiPath}/names/Bert`).send({sex: "boy"});
+    await given.agent.post(`${apiPath}/names/Berta`).send({sex: "neutral"});
+    const response = await given.agent.get(`${apiPath}/names/B`).query({mode: "prefix", sexes: JSON.stringify({list: ["girl", "neutral"]})});
 
-    expect(JSON.parse(response.text)).toStrictEqual([{name: "Berit", sex: "girl"}, {name: "Berta", sex: "girl"}]);
+    expect(JSON.parse(response.text)).toStrictEqual([{name: "Berit", sex: "girl"}, {name: "Berta", sex: "neutral"}]);
     expect(response.status).toBe(200);
 
     done();
@@ -122,9 +123,11 @@ it("Suffix search", async done => {
     await given.agent.post(`${apiPath}/names/Jonathan`).send({sex: "boy"});
     await given.agent.post(`${apiPath}/names/Mirian`).send({sex: "girl"});
     await given.agent.post(`${apiPath}/names/Berta`).send({sex: "girl"});
-    const response = await given.agent.get(`${apiPath}/names/an`).query({mode: "suffix"});
+    await given.agent.post(`${apiPath}/names/Radaman`).send({sex: "neutral"});
+    await given.agent.post(`${apiPath}/names/Fifian`).send({sex: "girl"});
+    const response = await given.agent.get(`${apiPath}/names/an`).query({mode: "suffix", sexes: JSON.stringify({list: ["girl"]})});
 
-    expect(JSON.parse(response.text)).toStrictEqual([{name: "Jonathan", sex: "boy"}, {name: "Mirian", sex: "girl"}]);
+    expect(JSON.parse(response.text)).toStrictEqual([{name: "Mirian", sex: "girl"}, {name: "Fifian", sex: "girl"}]);
     expect(response.status).toBe(200);
 
     done();

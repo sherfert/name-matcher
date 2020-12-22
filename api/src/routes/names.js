@@ -7,19 +7,20 @@ exports.get = function (req, res, next) {
   if (!name) throw {message: 'Invalid name.', status: 400};
   const mode = req.query.mode;
 
-  const session = dbUtils.getSession(req);
+  const sexes = req.query.sexes ? JSON.parse(req.query.sexes).list : undefined;
 
+  const session = dbUtils.getSession(req);
   let promise;
   switch (mode) {
     case "prefix":
-      promise =  Names.prefixSearch(session, name);
+      promise =  Names.prefixSearch(session, name, sexes);
       break;
     case "suffix":
-      promise =  Names.suffixSearch(session, name);
+      promise =  Names.suffixSearch(session, name, sexes);
       break;
     case "exact":
     default:
-      promise =  Names.get(session, name);
+      promise =  Names.exactSearch(session, name);
       break;
   }
 
