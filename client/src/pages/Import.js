@@ -2,6 +2,13 @@ import React from 'react';
 import settings from '../config/settings';
 import AlertPopup from "../forms/AlertPopup";
 import TextForm from "../forms/TextForm";
+import FormControl from "@material-ui/core/FormControl";
+import FormLabel from "@material-ui/core/FormLabel";
+import RadioGroup from "@material-ui/core/RadioGroup";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Radio from "@material-ui/core/Radio";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faMars, faVenus, faVenusMars} from "@fortawesome/free-solid-svg-icons";
 
 const axios = require('axios').default;
 
@@ -11,13 +18,18 @@ class Import extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            sex: "boy"
         };
         this.alert = React.createRef();
     }
 
     addName(name) {
-        axios.post(`${apiBaseURL}/names/${name}`)
+        axios.post(`${apiBaseURL}/names/${name}`, {sex: this.state.sex})
             .catch(err => {if (this.alert.current) {this.alert.current.handleError(err);} else {console.log(err);}});
+    }
+
+    selectSex(event) {
+        this.setState({sex: event.target.value});
     }
 
     render() {
@@ -25,9 +37,22 @@ class Import extends React.Component {
             <div>
                 <AlertPopup ref={this.alert}/>
             </div>
-            <TextForm buttonText={"Add single name"} submitted={(name) => {
-                this.addName(name);
-            }}/>
+            <h1>Add a single name</h1>
+            <div>
+                <FormControl component="fieldset">
+                    <FormLabel component="legend">Sex</FormLabel>
+                    <RadioGroup row aria-label="sex" name="sex1" value={this.state.sex} onChange={this.selectSex.bind(this)}>
+                        <FormControlLabel value="boy" control={<Radio/>} label={<FontAwesomeIcon icon={faMars} />}/>
+                        <FormControlLabel value="girl" control={<Radio/>} label={<FontAwesomeIcon icon={faVenus} />}/>
+                        <FormControlLabel value="neutral" control={<Radio/>} label={<FontAwesomeIcon icon={faVenusMars} />}/>
+                    </RadioGroup>
+                </FormControl>
+            </div>
+            <div>
+                <TextForm buttonText={"Add"} submitted={(name) => {
+                    this.addName(name);
+                }}/>
+            </div>
         </>
     }
 }

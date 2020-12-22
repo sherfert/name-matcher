@@ -38,7 +38,7 @@ api.use(function (req, res, next) {
 api.use(neo4jSessionCleanup);
 
 // Create constraints and indexes
-startup.createDBConstraints();
+startup.createDBConstraintsAndIndexes();
 
 //api routes
 api.get("/people", routes.people.list);

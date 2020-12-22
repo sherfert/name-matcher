@@ -15,9 +15,9 @@ const get = function (session, name) {
 };
 
 // add a new name
-const create = function (session, name) {
+const create = function (session, name, sex) {
     return session.writeTransaction(txc =>
-        txc.run('MERGE (name:Name {name: $name}) RETURN name AS name', {name: name})
+        txc.run('MERGE (name:Name {name: $name}) SET name.sex = $sex RETURN name AS name', {name: name, sex: sex})
     ).then(result => new Name(result.records[0].get('name')));
 };
 

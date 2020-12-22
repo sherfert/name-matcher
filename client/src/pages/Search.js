@@ -18,7 +18,7 @@ class Search extends React.Component {
 
     findName(name) {
         axios.get(`${apiBaseURL}/names/${name}`)
-            .then(resp => this.setState(state => ({...state, names: [resp.data.name]})))
+            .then(resp => this.setState(state => ({...state, names: [`${resp.data.name} is a ${resp.data.sex}`]})))
             .catch(err => {if (this.alert.current) {this.alert.current.handleError(err);} else {console.log(err);}});
     }
 

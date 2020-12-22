@@ -19,7 +19,7 @@ exports.findByName = function (req, res, next) {
 
 exports.create = function (req, res, next) {
   const name = req.params.name;
-  if (!name) throw {message: 'Invalid name', status: 400};
+  if (!name) throw {message: 'Invalid user name.', status: 400};
 
   People.create(dbUtils.getSession(req), name)
       .then(response => writeResponse(res, response))
