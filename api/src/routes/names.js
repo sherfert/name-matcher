@@ -5,8 +5,25 @@ const Names = require('../models/names')
 exports.get = function (req, res, next) {
   const name = req.params.name;
   if (!name) throw {message: 'Invalid name.', status: 400};
+  const mode = req.body.mode;
 
-  Names.get(dbUtils.getSession(req), name)
+  const session = dbUtils.getSession(req);
+
+  let promise;
+  switch (mode) {
+    case "prefix":
+      promise =  Names.prefixSearch(session, name);
+      break;
+    case "suffix":
+      promise =  Names.suffixSearch(session, name);
+      break;
+    case "exact":
+    default:
+      promise =  Names.get(session, name);
+      break;
+  }
+
+  promise
       .then(response => writeResponse(res, response))
       .catch(next);
 };
