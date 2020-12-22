@@ -9,6 +9,7 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Radio from "@material-ui/core/Radio";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faMars, faVenus, faVenusMars} from "@fortawesome/free-solid-svg-icons";
+import Button from "@material-ui/core/Button";
 
 const axios = require('axios').default;
 
@@ -33,6 +34,16 @@ class Import extends React.Component {
         this.setState(state => ({...state, sex: sex}));
     }
 
+    selectFile(event) {
+        const file = event.target.files[0];
+        event.target.value = '';
+        const formData = new FormData();
+        formData.append("file", file);
+        axios.post(`${apiBaseURL}/names-import/`, formData)
+            .catch(err => {if (this.alert.current) {this.alert.current.handleError(err);} else {console.log(err);}});
+
+    }
+
     render() {
         return <>
             <div>
@@ -40,19 +51,41 @@ class Import extends React.Component {
             </div>
             <h1>Add a single name</h1>
             <div>
-                <FormControl component="fieldset">
-                    <FormLabel component="legend">Sex</FormLabel>
-                    <RadioGroup row aria-label="sex" name="sex1" value={this.state.sex} onChange={this.selectSex.bind(this)}>
-                        <FormControlLabel value="boy" control={<Radio/>} label={<FontAwesomeIcon icon={faMars} />}/>
-                        <FormControlLabel value="girl" control={<Radio/>} label={<FontAwesomeIcon icon={faVenus} />}/>
-                        <FormControlLabel value="neutral" control={<Radio/>} label={<FontAwesomeIcon icon={faVenusMars} />}/>
-                    </RadioGroup>
-                </FormControl>
+                <div>
+                    <FormControl component="fieldset">
+                        <FormLabel component="legend">Sex</FormLabel>
+                        <RadioGroup row aria-label="sex" name="sex1" value={this.state.sex} onChange={this.selectSex.bind(this)}>
+                            <FormControlLabel value="boy" control={<Radio/>} label={<FontAwesomeIcon icon={faMars}/>}/>
+                            <FormControlLabel value="girl" control={<Radio/>} label={<FontAwesomeIcon icon={faVenus}/>}/>
+                            <FormControlLabel value="neutral" control={<Radio/>} label={<FontAwesomeIcon icon={faVenusMars}/>}/>
+                        </RadioGroup>
+                    </FormControl>
+                </div>
+                <div>
+                    <TextForm resetOnSubmit buttonText={"Add"} submitted={(name) => {
+                        this.addName(name);
+                    }}/>
+                </div>
             </div>
+            <h1>Import CSV</h1>
             <div>
-                <TextForm resetOnSubmit buttonText={"Add"} submitted={(name) => {
-                    this.addName(name);
-                }}/>
+                <div>
+                    Import a CSV file. The first column is the name, the second is "boy", "girl", or "neutral" (no quotes).
+                </div>
+                <div>
+                    <Button
+                        variant="contained"
+                        component="label"
+                        style={{margin: "5px"}}
+                    >
+                        Upload File
+                        <input
+                            type="file"
+                            hidden
+                            onChange={this.selectFile.bind(this)}
+                        />
+                    </Button>
+                </div>
             </div>
         </>
     }

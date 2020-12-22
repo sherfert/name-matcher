@@ -1,4 +1,6 @@
 import React from "react";
+import Button from "@material-ui/core/Button";
+import TextField from "@material-ui/core/TextField";
 
 class TextForm extends React.Component {
     constructor(props) {
@@ -28,8 +30,8 @@ class TextForm extends React.Component {
     render() {
         return (
             <form onSubmit={this.handleSubmit}>
-                <input type="text" value={this.state.value} onChange={this.handleChange}/>
-                <input type="submit" value={this.props.buttonText}/>
+                <TextField style={{margin: "5px"}} type="search" value={this.state.value} onChange={this.handleChange} />
+                <Button style={{margin: "5px"}} type="submit" variant="contained">{this.props.buttonText}</Button>
             </form>
         );
     }

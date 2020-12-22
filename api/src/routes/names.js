@@ -38,3 +38,8 @@ exports.create = function (req, res, next) {
       .then(response => writeResponse(res, response))
       .catch(next);
 };
+
+exports.import = function (req, res, next) {
+  console.log(req.file);
+  writeResponse(res, "Tadaa");
+};

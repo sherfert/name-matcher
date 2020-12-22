@@ -7,10 +7,13 @@ const express = require("express"),
     bodyParser = require("body-parser"),
     neo4jSessionCleanup = require("./src/middlewares/neo4jSessionCleanup"),
     writeError = require("./src/helpers/response").writeError,
-    startup = require('./src/neo4j/startup');
+    startup = require('./src/neo4j/startup'),
+    multer = require('multer');
 
 const app = express(),
     api = express();
+
+const upload = multer({ dest: 'uploads/' });
 
 app.use(nconf.get("api_path"), api);
 
@@ -47,6 +50,7 @@ api.post("/people/:name", routes.people.create);
 
 api.get("/names/:name", routes.names.get);
 api.post("/names/:name", routes.names.create);
+api.post("/names-import/", upload.single('file'), routes.names.import);
 
 //api error handler
 api.use(function (err, req, res, next) {
