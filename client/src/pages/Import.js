@@ -10,6 +10,7 @@ import Radio from "@material-ui/core/Radio";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faMars, faVenus, faVenusMars} from "@fortawesome/free-solid-svg-icons";
 import Button from "@material-ui/core/Button";
+import HourglassEmptyIcon from '@material-ui/icons/HourglassEmpty';
 
 const axios = require('axios').default;
 
@@ -19,7 +20,8 @@ class Import extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            sex: "boy"
+            sex: "boy",
+            importInProgress: false
         };
         this.alert = React.createRef();
     }
@@ -35,16 +37,20 @@ class Import extends React.Component {
     }
 
     selectFile(event) {
+        this.setState(state => ({...state, importInProgress: true}));
         const file = event.target.files[0];
         event.target.value = '';
         const formData = new FormData();
         formData.append("file", file);
         axios.post(`${apiBaseURL}/names-import/`, formData)
-            .catch(err => {if (this.alert.current) {this.alert.current.handleError(err);} else {console.log(err);}});
+            .catch(err => {if (this.alert.current) {this.alert.current.handleError(err);} else {console.log(err);}})
+            .finally(() => this.setState(state => ({...state, importInProgress: false})))
+        ;
 
     }
 
     render() {
+        const inProgessIcon = this.state.importInProgress ? <HourglassEmptyIcon  fontSize="inherit"/> : "";
         return <>
             <div>
                 <AlertPopup ref={this.alert}/>
@@ -85,6 +91,7 @@ class Import extends React.Component {
                             onChange={this.selectFile.bind(this)}
                         />
                     </Button>
+                    {inProgessIcon}
                 </div>
             </div>
         </>
