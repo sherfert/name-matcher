@@ -28,9 +28,18 @@ const create = function (session, name, sex) {
     ).then(result => new Name(result.records[0].get('name')));
 };
 
+// LOAD CSV
+const loadCSV = function (session, filename) {
+    const url = `file:///${filename}`;
+    return session.writeTransaction(txc =>
+        txc.run("LOAD CSV FROM $url AS line MERGE (n:Name {name: line[0]}) ON CREATE SET n.sex = line[1]", {url: url})
+    ).then(() => {}); // Query does not return anything
+};
+
 module.exports = {
     get: get,
     prefixSearch: prefixSearch,
     suffixSearch: suffixSearch,
-    create: create
+    create: create,
+    loadCSV: loadCSV
 };

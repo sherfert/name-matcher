@@ -129,3 +129,24 @@ it("Suffix search", async done => {
 
     done();
 });
+
+it("CSV Import", async done => {
+    const csvResponse = await given.agent.post(`${apiPath}/names-import`)
+        .attach('file',`${__dirname}/files/names.csv`);
+
+    expect(csvResponse.status).toBe(200);
+
+    const names = [
+        {name: "Anna", sex: "girl"},
+        {name: "Bob", sex: "boy"},
+        {name: "Emma", sex: "girl"},
+        {name: "Fifi", sex: "boy"},
+        {name: "Alex", sex: "neutral"},
+    ];
+
+    for (const name of names) {
+        const getResponse = await given.agent.get(`${apiPath}/names/${name.name}`).query({mode: 'exact'});
+        expect(JSON.parse(getResponse.text)).toStrictEqual([name]);
+    }
+    done();
+});

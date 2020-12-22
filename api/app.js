@@ -13,7 +13,7 @@ const express = require("express"),
 const app = express(),
     api = express();
 
-const upload = multer({ dest: 'uploads/' });
+const upload = multer({ dest: nconf.get("neo4j-import-path") });
 
 app.use(nconf.get("api_path"), api);
 
