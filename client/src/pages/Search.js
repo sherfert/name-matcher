@@ -8,6 +8,7 @@ import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Radio from "@material-ui/core/Radio";
 import NameRater from "../elements/NameRater";
+import HourglassEmptyIcon from "@material-ui/icons/HourglassEmpty";
 
 const axios = require('axios').default;
 
@@ -18,15 +19,19 @@ class Search extends React.Component {
         super(props);
         this.state = {
             mode: "exact",
-            names: []
+            names: [],
+            searchInProgress: false
         };
         this.alert = React.createRef();
     }
 
     findName(name) {
+        this.setState(state => ({...state, names:[], searchInProgress: true}));
+
         axios.get(`${apiBaseURL}/names/${name}`, {params: {mode: this.state.mode}})
             .then(resp => this.setState(state => ({...state, names: resp.data})))
-            .catch(err => {if (this.alert.current) {this.alert.current.handleError(err);} else {console.log(err);}});
+            .catch(err => {if (this.alert.current) {this.alert.current.handleError(err);} else {console.log(err);}})
+            .finally(() => this.setState(state => ({...state, searchInProgress: false})));
     }
 
     selectMode(event) {
@@ -36,6 +41,7 @@ class Search extends React.Component {
 
     render() {
         const names = this.state.names.map(name => <NameRater key={name.name} name={name.name} sex={name.sex} />);
+        const inProgessIcon = this.state.searchInProgress ? <HourglassEmptyIcon  fontSize="inherit"/> : "";
         return <>
             <div>
                 <AlertPopup ref={this.alert}/>
@@ -54,6 +60,7 @@ class Search extends React.Component {
                 <TextForm buttonText={"Search"} submitted={(name) => {
                     this.findName(name);
                 }}/>
+                {inProgessIcon}
             </div>
             <div>{names}</div>
         </>

@@ -44,9 +44,7 @@ class Import extends React.Component {
         formData.append("file", file);
         axios.post(`${apiBaseURL}/names-import/`, formData)
             .catch(err => {if (this.alert.current) {this.alert.current.handleError(err);} else {console.log(err);}})
-            .finally(() => this.setState(state => ({...state, importInProgress: false})))
-        ;
-
+            .finally(() => this.setState(state => ({...state, importInProgress: false})));
     }
 
     render() {
