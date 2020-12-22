@@ -5,7 +5,7 @@ const Names = require('../models/names')
 exports.get = function (req, res, next) {
   const name = req.params.name;
   if (!name) throw {message: 'Invalid name.', status: 400};
-  const mode = req.body.mode;
+  const mode = req.query.mode;
 
   const session = dbUtils.getSession(req);
 

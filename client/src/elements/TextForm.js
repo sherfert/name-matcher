@@ -12,13 +12,16 @@ class TextForm extends React.Component {
     }
 
     handleChange(event) {
-        this.setState({value: event.target.value});
+        const value = event.target.value
+        this.setState(state => ({...state, value: value}));
     }
 
     handleSubmit(event) {
         event.preventDefault();
         this.props.submitted(this.state.value);
-        this.setState({value: ''});
+        if (this.props.resetOnSubmit) {
+            this.setState(state => ({...state, value: ''}));
+        }
     }
 
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import settings from '../config/settings';
-import AlertPopup from "../forms/AlertPopup";
-import TextForm from "../forms/TextForm";
+import AlertPopup from "../elements/AlertPopup";
+import TextForm from "../elements/TextForm";
 import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
 import RadioGroup from "@material-ui/core/RadioGroup";
@@ -29,7 +29,8 @@ class Import extends React.Component {
     }
 
     selectSex(event) {
-        this.setState({sex: event.target.value});
+        const sex = event.target.value;
+        this.setState(state => ({...state, sex: sex}));
     }
 
     render() {
@@ -49,7 +50,7 @@ class Import extends React.Component {
                 </FormControl>
             </div>
             <div>
-                <TextForm buttonText={"Add"} submitted={(name) => {
+                <TextForm resetOnSubmit buttonText={"Add"} submitted={(name) => {
                     this.addName(name);
                 }}/>
             </div>
