@@ -13,17 +13,19 @@ exports.get = function (req, res, next) {
   let promise;
   switch (mode) {
     case "prefix":
-      if(!sexes) throw {message: 'Invalid sexes.', status: 400};
-      promise =  Names.prefixSearch(session, name, sexes);
+      if(!sexes || sexes.some(sex => sex !== "boy" && sex !== "girl" && sex !== "neutral")) throw {message: `Invalid sexes: ${sexes}.`, status: 400};
+      promise = Names.prefixSearch(session, name, sexes);
       break;
     case "suffix":
-      if(!sexes) throw {message: 'Invalid sexes.', status: 400};
-      promise =  Names.suffixSearch(session, name, sexes);
+      if(!sexes || sexes.some(sex => sex !== "boy" && sex !== "girl" && sex !== "neutral")) throw {message: `Invalid sexes: ${sexes}.`, status: 400};
+      promise = Names.suffixSearch(session, name, sexes);
       break;
     case "exact":
-    default:
-      promise =  Names.exactSearch(session, name);
+    case undefined:
+      promise = Names.exactSearch(session, name);
       break;
+    default:
+      throw {message: `Invalid mode: ${mode}.`, status: 400};
   }
 
   promise
@@ -44,17 +46,19 @@ exports.getWithRating = function (req, res, next) {
   let promise;
   switch (mode) {
     case "prefix":
-      if(!sexes) throw {message: 'Invalid sexes.', status: 400};
-      promise =  Names.prefixSearchWithRating(session, user, name, sexes);
+      if(!sexes || sexes.some(sex => sex !== "boy" && sex !== "girl" && sex !== "neutral")) throw {message: `Invalid sexes: ${sexes}.`, status: 400};
+      promise = Names.prefixSearchWithRating(session, user, name, sexes);
       break;
     case "suffix":
-      if(!sexes) throw {message: 'Invalid sexes.', status: 400};
-      promise =  Names.suffixSearchWithRating(session, user, name, sexes);
+      if(!sexes || sexes.some(sex => sex !== "boy" && sex !== "girl" && sex !== "neutral")) throw {message: `Invalid sexes: ${sexes}.`, status: 400};
+      promise = Names.suffixSearchWithRating(session, user, name, sexes);
       break;
     case "exact":
-    default:
-      promise =  Names.exactSearchWithRating(session, user, name);
+    case undefined:
+      promise = Names.exactSearchWithRating(session, user, name);
       break;
+    default:
+      throw {message: `Invalid mode: ${mode}.`, status: 400};
   }
 
   promise
@@ -81,11 +85,11 @@ exports.import = function (req, res, next) {
 
 exports.rate = function (req, res, next) {
   const user = req.body.user;
-  if (!user) throw {message: 'Invalid user name.', status: 400};
+  if (!user || typeof user !== "string") throw {message: `Invalid user name: ${user}.`, status: 400};
   const name = req.params.name;
   if (!name) throw {message: 'Invalid name.', status: 400};
   const rating = req.body.rating;
-  if (!rating) throw {message: 'Invalid rating.', status: 400};
+  if (!rating || typeof rating !== "number" || rating % 1 !== 0) throw {message: `Invalid rating: ${rating}.`, status: 400};
 
 
   Names.rate(dbUtils.getSession(req), user, name, rating)

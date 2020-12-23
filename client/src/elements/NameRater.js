@@ -28,7 +28,7 @@ class NameRater extends React.Component {
     }
 
     rate(event) {
-        const rating = event.target.value;
+        const rating = parseInt(event.target.value);
         axios.post(`${apiBaseURL}/names/${this.props.name}/rating`, {user: this.props.user, rating: rating})
             .then(() => this.setState(state =>({...state, rating: rating})))
             .catch(this.props.handleError);

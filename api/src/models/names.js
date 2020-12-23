@@ -98,12 +98,13 @@ const loadCSV = function (session, filename) {
     ).then(() => {}); // Query does not return anything
 };
 
+// Rate a name
 const rate = function(session, user, name, rating) {
     return session.writeTransaction(txc =>
         txc.run(
             `MATCH (user:Person {name: $user}), (name:Name {name: $name}) 
              MERGE (user)-[rating:RATING]->(name) 
-             SET rating.stars = $rating 
+             SET rating.stars = toInteger($rating) 
              RETURN properties(rating) AS rating`,
             {user: user, name: name, rating: rating})
     ).then(result => result.records[0].get('rating'));
