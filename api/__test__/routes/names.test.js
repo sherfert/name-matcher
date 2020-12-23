@@ -153,3 +153,25 @@ it("CSV Import", async done => {
     }
     done();
 });
+
+it("CSV Import overrides sex", async done => {
+    await given.agent.post(`${apiPath}/names-import`)
+        .attach('file',`${__dirname}/files/names.csv`);
+    await given.agent.post(`${apiPath}/names-import`)
+        .attach('file',`${__dirname}/files/names2.csv`);
+
+    const names = [
+        {name: "Anna", sex: "girl"},
+        {name: "Bob", sex: "girl"},
+        {name: "Emma", sex: "girl"},
+        {name: "Ebba", sex: "girl"},
+        {name: "Fifi", sex: "neutral"},
+        {name: "Alex", sex: "neutral"},
+    ];
+
+    for (const name of names) {
+        const getResponse = await given.agent.get(`${apiPath}/names/${name.name}`).query({mode: 'exact'});
+        expect(JSON.parse(getResponse.text)).toStrictEqual([name]);
+    }
+    done();
+});

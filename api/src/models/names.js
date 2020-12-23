@@ -32,7 +32,7 @@ const create = function (session, name, sex) {
 const loadCSV = function (session, filename) {
     const url = `file:///${filename}`;
     return session.writeTransaction(txc =>
-        txc.run("LOAD CSV FROM $url AS line MERGE (n:Name {name: line[0]}) ON CREATE SET n.sex = line[1]", {url: url})
+        txc.run("LOAD CSV FROM $url AS line MERGE (n:Name {name: line[0]}) SET n.sex = line[1]", {url: url})
     ).then(() => {}); // Query does not return anything
 };
 
