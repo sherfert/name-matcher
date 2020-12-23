@@ -92,7 +92,7 @@ class Search extends React.Component {
                     </RadioGroup>
                 </FormControl>
             </div>
-            <div>
+            <div className={this.state.mode === "exact" ? 'hidden' : ''} >
                 <FormControl>
                     <FormLabel>Sex</FormLabel>
                     <FormGroup row>
