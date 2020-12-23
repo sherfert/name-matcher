@@ -175,3 +175,96 @@ it("CSV Import overrides sex", async done => {
     }
     done();
 });
+
+it("Rate a name", async done => {
+    const user = "TheGuy"
+    const name = "Berta"
+    const rating = 5
+    await given.agent.post(`${apiPath}/people/${user}`);
+    await given.agent.post(`${apiPath}/names/${name}`).send({sex: "girl"});
+
+    const response = await given.agent.post(`${apiPath}/names/${name}/rating`).send({user: user, rating: rating});
+
+    expect(JSON.parse(response.text)).toStrictEqual({stars: rating});
+    expect(response.status).toBe(200);
+
+    done();
+});
+
+it("Rate a name and exact search", async done => {
+    const user = "TheGuy"
+    const name = "Berta"
+    const rating = 5
+    await given.agent.post(`${apiPath}/people/${user}`);
+    await given.agent.post(`${apiPath}/names/${name}`).send({sex: "girl"});
+    await given.agent.post(`${apiPath}/names/${name}/rating`).send({user: user, rating: rating});
+
+    const response = await given.agent.get(`${apiPath}/names/${name}/rating`).query({user: user});
+
+    expect(JSON.parse(response.text)).toStrictEqual([{name: {name: name, sex: "girl"}, rating: {stars: rating}}]);
+    expect(response.status).toBe(200);
+
+    done();
+});
+
+it("Rate a name twice overrides rating", async done => {
+    const user = "TheGuy"
+    const name = "Berta"
+    const rating = 5
+    await given.agent.post(`${apiPath}/people/${user}`);
+    await given.agent.post(`${apiPath}/names/${name}`).send({sex: "girl"});
+    await given.agent.post(`${apiPath}/names/${name}/rating`).send({user: user, rating: 2});
+    await given.agent.post(`${apiPath}/names/${name}/rating`).send({user: user, rating: rating});
+
+    const response = await given.agent.get(`${apiPath}/names/${name}/rating`).query({user: user});
+
+    expect(JSON.parse(response.text)).toStrictEqual([{name: {name: name, sex: "girl"}, rating: {stars: rating}}]);
+    expect(response.status).toBe(200);
+
+    done();
+});
+
+it("Prefix search with rating", async done => {
+    const user = "TheGuy"
+    await given.agent.post(`${apiPath}/people/${user}`);
+    await given.agent.post(`${apiPath}/names/Adam`).send({sex: "boy"});
+    await given.agent.post(`${apiPath}/names/Berit`).send({sex: "girl"});
+    await given.agent.post(`${apiPath}/names/Berit/rating`).send({user: user, rating: 3});
+    await given.agent.post(`${apiPath}/names/Bert`).send({sex: "boy"});
+    await given.agent.post(`${apiPath}/names/Berta`).send({sex: "neutral"});
+
+
+    const response = await given.agent.get(`${apiPath}/names/B/rating`).query({user: user, mode: "prefix", sexes: JSON.stringify({list: ["girl", "neutral"]})});
+
+    expect(JSON.parse(response.text)).toStrictEqual([
+        {name: {name: "Berit", sex: "girl"}, rating: {stars: 3}},
+        {name: {name: "Berta", sex: "neutral"}, rating: null},
+    ]);
+    expect(response.status).toBe(200);
+
+    done();
+});
+
+it("Suffix search with rating", async done => {
+    const user = "TheGuy"
+    await given.agent.post(`${apiPath}/people/${user}`);
+    await given.agent.post(`${apiPath}/names/Jonathan`).send({sex: "boy"});
+    await given.agent.post(`${apiPath}/names/Mirian`).send({sex: "girl"});
+    await given.agent.post(`${apiPath}/names/Berta`).send({sex: "girl"});
+    await given.agent.post(`${apiPath}/names/Radaman`).send({sex: "neutral"});
+    await given.agent.post(`${apiPath}/names/Fifian`).send({sex: "girl"});
+    await given.agent.post(`${apiPath}/names/Fifian/rating`).send({user: user, rating: 5});
+
+
+    const response = await given.agent.get(`${apiPath}/names/an/rating`).query({user: user, mode: "suffix", sexes: JSON.stringify({list: ["girl"]})});
+
+    const actual = JSON.parse(response.text);
+    expect(actual).toStrictEqual(expect.arrayContaining([
+        {name: {name: "Fifian", sex: "girl"}, rating: {stars: 5}},
+        {name: {name: "Mirian", sex: "girl"}, rating: null},
+    ]));
+    expect(actual.length).toBe(2); // Order undefined for this query
+    expect(response.status).toBe(200);
+
+    done();
+});

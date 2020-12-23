@@ -31,17 +31,25 @@ class People extends React.Component {
     fetchNames ()  {
         axios.get(`${apiBaseURL}/people/`)
             .then(resp => this.setState(state => ({...state, names: resp.data.map(person => person.name)})))
-            .catch(err => {if (this.alert.current) {this.alert.current.handleError(err);} else {console.log(err);}});
+            .catch(this.handleError.bind(this));
     }
 
     addPerson(name) {
         axios.post(`${apiBaseURL}/people/${name}`)
             .then(() => this.fetchNames())
-            .catch(err => {if (this.alert.current) {this.alert.current.handleError(err);} else {console.log(err);}});
+            .catch(this.handleError.bind(this));
     }
 
     goToMainPageForPerson(name) {
-        ReactDOM.render(<MainPage name={name} />, document.getElementById('root'));
+        ReactDOM.render(<MainPage user={name} />, document.getElementById('root'));
+    }
+
+    handleError(err) {
+        if (this.alert.current) {
+            this.alert.current.handleError(err);
+        } else {
+            console.log(err);
+        }
     }
 
     render() {

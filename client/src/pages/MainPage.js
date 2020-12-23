@@ -13,7 +13,6 @@ class MainPage extends React.Component {
         this.state = {
             tabValue: "rate"
         };
-        // this.props.name
     }
 
     render() {
@@ -29,7 +28,7 @@ class MainPage extends React.Component {
                         </TabList>
                     </AppBar>
                     <TabPanel value="rate">Rate</TabPanel>
-                    <TabPanel value="search"><Search /></TabPanel>
+                    <TabPanel value="search"><Search user={this.props.user} /></TabPanel>
                     <TabPanel value="matches">Matches</TabPanel>
                     <TabPanel value="import"><Import /></TabPanel>
                 </TabContext>

@@ -52,6 +52,9 @@ api.get("/names/:name", routes.names.get);
 api.post("/names/:name", routes.names.create);
 api.post("/names-import/", upload.single('file'), routes.names.import);
 
+api.post("/names/:name/rating", routes.names.rate);
+api.get("/names/:name/rating", routes.names.getWithRating);
+
 //api error handler
 api.use(function (err, req, res, next) {
   if (err && err.status) {

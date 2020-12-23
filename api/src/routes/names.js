@@ -13,14 +13,47 @@ exports.get = function (req, res, next) {
   let promise;
   switch (mode) {
     case "prefix":
+      if(!sexes) throw {message: 'Invalid sexes.', status: 400};
       promise =  Names.prefixSearch(session, name, sexes);
       break;
     case "suffix":
+      if(!sexes) throw {message: 'Invalid sexes.', status: 400};
       promise =  Names.suffixSearch(session, name, sexes);
       break;
     case "exact":
     default:
       promise =  Names.exactSearch(session, name);
+      break;
+  }
+
+  promise
+      .then(response => writeResponse(res, response))
+      .catch(next);
+};
+
+exports.getWithRating = function (req, res, next) {
+  const user = req.query.user;
+  if (!user) throw {message: 'Invalid user name.', status: 400};
+  const name = req.params.name;
+  if (!name) throw {message: 'Invalid name.', status: 400};
+  const mode = req.query.mode;
+
+  const sexes = req.query.sexes ? JSON.parse(req.query.sexes).list : undefined;
+
+  const session = dbUtils.getSession(req);
+  let promise;
+  switch (mode) {
+    case "prefix":
+      if(!sexes) throw {message: 'Invalid sexes.', status: 400};
+      promise =  Names.prefixSearchWithRating(session, user, name, sexes);
+      break;
+    case "suffix":
+      if(!sexes) throw {message: 'Invalid sexes.', status: 400};
+      promise =  Names.suffixSearchWithRating(session, user, name, sexes);
+      break;
+    case "exact":
+    default:
+      promise =  Names.exactSearchWithRating(session, user, name);
       break;
   }
 
@@ -42,6 +75,20 @@ exports.create = function (req, res, next) {
 
 exports.import = function (req, res, next) {
   Names.loadCSV(dbUtils.getSession(req), req.file.filename)
+      .then(response => writeResponse(res, response))
+      .catch(next);
+};
+
+exports.rate = function (req, res, next) {
+  const user = req.body.user;
+  if (!user) throw {message: 'Invalid user name.', status: 400};
+  const name = req.params.name;
+  if (!name) throw {message: 'Invalid name.', status: 400};
+  const rating = req.body.rating;
+  if (!rating) throw {message: 'Invalid rating.', status: 400};
+
+
+  Names.rate(dbUtils.getSession(req), user, name, rating)
       .then(response => writeResponse(res, response))
       .catch(next);
 };

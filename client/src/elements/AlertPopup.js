@@ -16,7 +16,6 @@ class AlertPopup extends React.Component {
 
     handleError (err) {
         const msg = (err.response && err.response.data && err.response.data.message) || err.message;
-        console.log(err);
         this.setState(state => ({...state, alertMessage: msg}));
     }
 

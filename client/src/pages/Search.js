@@ -23,7 +23,7 @@ class Search extends React.Component {
         super(props);
         this.state = {
             mode: "exact",
-            names: [],
+            namesWithRatings: [],
             searchInProgress: false,
             findBoys: true,
             findGirls: true,
@@ -40,11 +40,10 @@ class Search extends React.Component {
             {str: "girl", enabled: this.state.findGirls},
             {str: "neutral", enabled: this.state.findNeutral},
         ].filter(obj => obj.enabled).map(obj => obj.str);
-        console.log(sexes);
 
-        axios.get(`${apiBaseURL}/names/${name}`, {params: {mode: this.state.mode, sexes: {list: sexes}}})
-            .then(resp => this.setState(state => ({...state, names: resp.data})))
-            .catch(err => {if (this.alert.current) {this.alert.current.handleError(err);} else {console.log(err);}})
+        axios.get(`${apiBaseURL}/names/${name}/rating`, {params: {mode: this.state.mode, sexes: {list: sexes}, user: this.props.user}})
+            .then(resp => this.setState(state => ({...state, namesWithRatings: resp.data})))
+            .catch(this.handleError.bind(this))
             .finally(() => this.setState(state => ({...state, searchInProgress: false})));
     }
 
@@ -59,8 +58,25 @@ class Search extends React.Component {
         this.setState(state => ({ ...state, [name]: checked }));
     }
 
+    handleError(err) {
+        if (this.alert.current) {
+            this.alert.current.handleError(err);
+        } else {
+            console.log(err);
+        }
+    }
+
     render() {
-        const names = this.state.names.map(name => <NameRater key={name.name} name={name.name} sex={name.sex} />);
+        const names = this.state.namesWithRatings.map(nameWithRating =>
+            <NameRater
+                key={nameWithRating.name.name}
+                name={nameWithRating.name.name}
+                sex={nameWithRating.name.sex}
+                user={this.props.user}
+                initialRating={nameWithRating.rating ? nameWithRating.rating.stars : null}
+                handleError={this.handleError.bind(this)}
+            />
+        );
         const inProgessIcon = this.state.searchInProgress ? <HourglassEmptyIcon  fontSize="inherit"/> : "";
         return <>
             <div>

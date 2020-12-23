@@ -28,7 +28,7 @@ class Import extends React.Component {
 
     addName(name) {
         axios.post(`${apiBaseURL}/names/${name}`, {sex: this.state.sex})
-            .catch(err => {if (this.alert.current) {this.alert.current.handleError(err);} else {console.log(err);}});
+            .catch(this.handleError.bind(this));
     }
 
     selectSex(event) {
@@ -43,8 +43,16 @@ class Import extends React.Component {
         const formData = new FormData();
         formData.append("file", file);
         axios.post(`${apiBaseURL}/names-import/`, formData)
-            .catch(err => {if (this.alert.current) {this.alert.current.handleError(err);} else {console.log(err);}})
+            .catch(this.handleError.bind(this))
             .finally(() => this.setState(state => ({...state, importInProgress: false})));
+    }
+
+    handleError(err) {
+        if (this.alert.current) {
+            this.alert.current.handleError(err);
+        } else {
+            console.log(err);
+        }
     }
 
     render() {
