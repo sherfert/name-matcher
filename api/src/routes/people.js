@@ -10,7 +10,7 @@ exports.list = function (req, res, next) {
 
 exports.findByName = function (req, res, next) {
   const name = req.params.name;
-  if (!name) throw {message: 'Invalid name', status: 400};
+  if (!name) throw {message: 'Invalid user name.', status: 400};
 
   People.getByName(dbUtils.getSession(req), name)
     .then(response => writeResponse(res, response))
