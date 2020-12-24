@@ -194,7 +194,6 @@ it("Suffix search", async done => {
     const response = await given.agent.get(`${apiPath}/names/an`).query({mode: "suffix", sexes: JSON.stringify({list: ["girl"]})});
 
     const actual = JSON.parse(response.text);
-    expect(actual).toStrictEqual([{name: "Mirian", sex: "girl"}, {name: "Fifian", sex: "girl"}]);
     expect(actual).toStrictEqual(expect.arrayContaining([
         {name: "Fifian", sex: "girl"},
         {name: "Mirian", sex: "girl"},
@@ -225,7 +224,6 @@ it("Wrong suffix search sexes type", async done => {
     done();
 });
 
-// TODO put checks into the LOAD CSV query and test that
 it("CSV Import", async done => {
     const csvResponse = await given.agent.post(`${apiPath}/names-import`)
         .attach('file',`${__dirname}/files/names.csv`);
