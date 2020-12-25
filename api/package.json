@@ -45,6 +45,6 @@
   },
   "scripts": {
     "start": "node start.js",
-    "test": "jest --forceExit"
+    "test": "jest --forceExit --runInBand"
   }
 }
