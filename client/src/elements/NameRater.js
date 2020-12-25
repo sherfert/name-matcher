@@ -15,7 +15,7 @@ class NameRater extends React.Component {
         };
     }
 
-    iconFor(sex) {
+    static iconFor(sex) {
         switch (sex) {
             case "boy":
                 return <FontAwesomeIcon icon={faMars} />;
@@ -41,8 +41,8 @@ class NameRater extends React.Component {
 
     render() {
         const name = this.props.big ?
-            <h1>{this.props.name} {this.iconFor(this.props.sex)}</h1>
-            : <>{this.props.name} {this.iconFor(this.props.sex)}</>;
+            <h1>{this.props.name} {NameRater.iconFor(this.props.sex)}</h1>
+            : <>{this.props.name} {NameRater.iconFor(this.props.sex)}</>;
         return (
             <div>
                 {name}

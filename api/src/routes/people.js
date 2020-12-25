@@ -43,3 +43,33 @@ exports.nextNamesToRate = function (req, res, next) {
         .then(response => writeResponse(res, response))
         .catch(next);
 };
+
+exports.matches = function (req, res, next) {
+    const user = req.params.name;
+    if (!user) throw {message: 'Invalid user name.', status: 400};
+    const otherUser = req.query.otherUser;
+    if (!otherUser) throw {message: 'Invalid other user name.', status: 400};
+
+    const sexes = req.query.sexes ? JSON.parse(req.query.sexes).list : undefined;
+    if (!sexes || sexes.some(sex => sex !== "boy" && sex !== "girl" && sex !== "neutral")) throw {message: `Invalid sexes: ${sexes}.`, status: 400};
+    const skip = parseInt(req.query.skip);
+    const limit = parseInt(req.query.limit);
+
+    People.matches(dbUtils.getSession(req), user, otherUser, sexes, skip, limit)
+        .then(response => writeResponse(res, response))
+        .catch(next);
+};
+
+exports.matchesCount = function (req, res, next) {
+    const user = req.params.name;
+    if (!user) throw {message: 'Invalid user name.', status: 400};
+    const otherUser = req.query.otherUser;
+    if (!otherUser) throw {message: 'Invalid other user name.', status: 400};
+
+    const sexes = req.query.sexes ? JSON.parse(req.query.sexes).list : undefined;
+    if (!sexes || sexes.some(sex => sex !== "boy" && sex !== "girl" && sex !== "neutral")) throw {message: `Invalid sexes: ${sexes}.`, status: 400};
+
+    People.matchesCount(dbUtils.getSession(req), user, otherUser, sexes)
+        .then(response => writeResponse(res, response))
+        .catch(next);
+};

@@ -43,12 +43,6 @@ class Search extends React.Component {
         this.setState(state => ({...state, mode: mode}));
     }
 
-    handleSexCheckboxChange(event) {
-        const name = event.target.name;
-        const checked = event.target.checked;
-        this.setState(state => ({ ...state, [name]: checked }));
-    }
-
     handleError(err) {
         if (this.alert.current) {
             this.alert.current.handleError(err);
@@ -68,7 +62,7 @@ class Search extends React.Component {
                 handleError={this.handleError.bind(this)}
             />
         );
-        const inProgessIcon = this.state.searchInProgress ? <HourglassEmptyIcon  fontSize="inherit"/> : "";
+        const inProgressIcon = this.state.searchInProgress ? <HourglassEmptyIcon  fontSize="inherit"/> : "";
         return <>
             <div>
                 <AlertPopup ref={this.alert}/>
@@ -83,14 +77,14 @@ class Search extends React.Component {
                     </RadioGroup>
                 </FormControl>
             </div>
-            <div className={this.state.mode === "exact" ? 'hidden' : ''} >
+            <div hidden={this.state.mode === "exact"} >
                 <SexCheckboxes ref={this.sexCheckboxes} />
             </div>
             <div>
                 <TextForm buttonText={"Search"} submitted={(name) => {
                     this.findNames(name);
                 }}/>
-                {inProgessIcon}
+                {inProgressIcon}
             </div>
             <div>{names}</div>
         </>

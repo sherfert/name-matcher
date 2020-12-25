@@ -56,7 +56,7 @@ class Import extends React.Component {
     }
 
     render() {
-        const inProgessIcon = this.state.importInProgress ? <HourglassEmptyIcon  fontSize="inherit"/> : "";
+        const inProgressIcon = this.state.importInProgress ? <HourglassEmptyIcon  fontSize="inherit"/> : "";
         return <>
             <div>
                 <AlertPopup ref={this.alert}/>
@@ -97,7 +97,7 @@ class Import extends React.Component {
                             onChange={this.selectFile.bind(this)}
                         />
                     </Button>
-                    {inProgessIcon}
+                    {inProgressIcon}
                 </div>
             </div>
         </>

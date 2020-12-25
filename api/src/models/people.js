@@ -60,9 +60,40 @@ const nextNamesToRate = function (session, user, sexes, limit) {
     ).then(result => result.records.map(r => r.get('name')));
 };
 
+// Matches
+const matches = function (session, user, otherUser, sexes, skip, limit) {
+    return session.readTransaction(txc =>
+        txc.run(
+            `MATCH (user:Person {name: $user})-[myRating:RATING]->(name)<-[otherRating:RATING]-(otherUser:Person {name: $otherUser})
+               WHERE name.sex IN $sexes
+             RETURN properties(name) AS name, properties(myRating) as myRating, properties(otherRating) as otherRating
+               ORDER BY myRating.stars + otherRating.stars DESC, myRating.stars DESC
+               SKIP $skip 
+               LIMIT $limit`,
+            {user: user, otherUser: otherUser, sexes: sexes, skip: int(skip), limit: int(limit)})
+    ).then(result => result.records.map(r => ({
+        name: r.get('name'),
+        myRating: r.get('myRating'),
+        otherRating: r.get('otherRating'),
+    })));
+};
+
+// Matches count
+const matchesCount = function (session, user, otherUser, sexes) {
+    return session.readTransaction(txc =>
+        txc.run(
+            `MATCH (user:Person {name: $user})-[myRating:RATING]->(name)<-[otherRating:RATING]-(otherUser:Person {name: $otherUser})
+               WHERE name.sex IN $sexes
+             RETURN count(*) AS count`,
+            {user: user, otherUser: otherUser, sexes: sexes})
+    ).then(result => result.records[0].get('count'));
+};
+
 module.exports = {
     getAll: getAll,
     getByName: getByName,
     create: create,
-    nextNamesToRate: nextNamesToRate
+    nextNamesToRate: nextNamesToRate,
+    matches: matches,
+    matchesCount: matchesCount,
 };

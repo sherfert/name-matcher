@@ -6,7 +6,7 @@ const given = integrationTest();
 
 it("Add a single boy name", async done => {
     // GIVEN
-    const name = "TheGuy"
+    const name = "TheGuy";
     const sex = "boy"
 
     // WHEN
@@ -20,8 +20,8 @@ it("Add a single boy name", async done => {
 
 it("Add a single girl name", async done => {
     // GIVEN
-    const name = "TheGirl"
-    const sex = "girl"
+    const name = "TheGirl";
+    const sex = "girl";
 
     // WHEN
     const response = await given.agent.post(`${apiPath}/names/${name}`).send({sex: sex});
@@ -34,8 +34,8 @@ it("Add a single girl name", async done => {
 
 it("Add a single sex-neutral name", async done => {
     // GIVEN
-    const name = "Alex"
-    const sex = "neutral"
+    const name = "Alex";
+    const sex = "neutral";
 
     // WHEN
     const response = await given.agent.post(`${apiPath}/names/${name}`).send({sex: sex});
@@ -48,8 +48,8 @@ it("Add a single sex-neutral name", async done => {
 
 it("Add a single name with invalid sex", async done => {
     // GIVEN
-    const name = "TheCopter"
-    const sex = "apache helicopter"
+    const name = "TheCopter";
+    const sex = "apache helicopter";
 
     // WHEN
     const response = await given.agent.post(`${apiPath}/names/${name}`).send({sex: sex});
@@ -62,8 +62,8 @@ it("Add a single name with invalid sex", async done => {
 
 it("Add a single name with invalid sex data type", async done => {
     // GIVEN
-    const name = "TheCopter"
-    const sex = 5
+    const name = "TheCopter";
+    const sex = 5;
 
     // WHEN
     const response = await given.agent.post(`${apiPath}/names/${name}`).send({sex: sex});
@@ -76,8 +76,8 @@ it("Add a single name with invalid sex data type", async done => {
 
 it("Add a single name and get that name", async done => {
     // GIVEN
-    const name = "TheGuy"
-    const sex = "boy"
+    const name = "TheGuy";
+    const sex = "boy";
     await given.agent.post(`${apiPath}/names/${name}`).send({sex: sex});
 
     // WHEN
@@ -91,7 +91,7 @@ it("Add a single name and get that name", async done => {
 
 it("Search for a non-existing name", async done => {
     // GIVEN
-    const name = "TheGuy"
+    const name = "TheGuy";
 
     // WHEN
     const response = await given.agent.get(`${apiPath}/names/${name}`);
@@ -104,8 +104,8 @@ it("Search for a non-existing name", async done => {
 
 it("Add the same name twice", async done => {
     // GIVEN
-    const name = "TheGuy"
-    const sex = "boy"
+    const name = "TheGuy";
+    const sex = "boy";
     await given.agent.post(`${apiPath}/names/${name}`).send({sex: sex});
 
     // WHEN
@@ -119,7 +119,7 @@ it("Add the same name twice", async done => {
 
 it("Change sex", async done => {
     // GIVEN
-    const name = "Alex"
+    const name = "Alex";
     await given.agent.post(`${apiPath}/names/${name}`).send({sex: "boy"});
 
     // WHEN
@@ -133,7 +133,7 @@ it("Change sex", async done => {
 
 it("Exact search", async done => {
     // GIVEN
-    const name = "Berta"
+    const name = "Berta";
     await given.agent.post(`${apiPath}/names/Adam`).send({sex: "boy"});
     await given.agent.post(`${apiPath}/names/Berit`).send({sex: "girl"});
     await given.agent.post(`${apiPath}/names/${name}`).send({sex: "girl"});
@@ -149,7 +149,7 @@ it("Exact search", async done => {
 
 it("No mode defaults to exact search", async done => {
     // GIVEN
-    const name = "Berta"
+    const name = "Berta";
     await given.agent.post(`${apiPath}/names/Adam`).send({sex: "boy"});
     await given.agent.post(`${apiPath}/names/Berit`).send({sex: "girl"});
     await given.agent.post(`${apiPath}/names/${name}`).send({sex: "girl"});
@@ -170,7 +170,7 @@ it("Wrong mode value", async done => {
     const mode = "more-or-less";
 
     // WHEN
-    const response = await given.agent.get(`${apiPath}/names/Berta`).query({mode: mode});;
+    const response = await given.agent.get(`${apiPath}/names/Berta`).query({mode: mode});
 
     // THEN
     expect(JSON.parse(response.text)).toStrictEqual({"message": `Invalid mode: ${mode}.`});
@@ -498,7 +498,7 @@ it("Search with rating: wrong mode value", async done => {
     const mode = "more-or-less";
 
     // WHEN
-    const response = await given.agent.get(`${apiPath}/names/Berta/rating`).query({mode: mode, user: "User"});;
+    const response = await given.agent.get(`${apiPath}/names/Berta/rating`).query({mode: mode, user: "User"});
 
     // THEN
     expect(JSON.parse(response.text)).toStrictEqual({"message": `Invalid mode: ${mode}.`});
@@ -511,7 +511,7 @@ it("Search with rating: wrong mode type", async done => {
     const mode = 5;
 
     // WHEN
-    const response = await given.agent.get(`${apiPath}/names/Berta/rating`).query({mode: mode, user: "User"});;
+    const response = await given.agent.get(`${apiPath}/names/Berta/rating`).query({mode: mode, user: "User"});
 
     // THEN
     expect(JSON.parse(response.text)).toStrictEqual({"message": `Invalid mode: ${mode}.`});
