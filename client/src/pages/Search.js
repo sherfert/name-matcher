@@ -9,10 +9,7 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Radio from "@material-ui/core/Radio";
 import NameRater from "../elements/NameRater";
 import HourglassEmptyIcon from "@material-ui/icons/HourglassEmpty";
-import Checkbox from "@material-ui/core/Checkbox";
-import {faMars, faVenus, faVenusMars} from "@fortawesome/free-solid-svg-icons";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import FormGroup from "@material-ui/core/FormGroup";
+import SexCheckboxes from "../elements/SexCheckboxes";
 
 const axios = require('axios').default;
 
@@ -25,21 +22,15 @@ class Search extends React.Component {
             mode: "exact",
             namesWithRatings: [],
             searchInProgress: false,
-            findBoys: true,
-            findGirls: true,
-            findNeutral: true
         };
         this.alert = React.createRef();
+        this.sexCheckboxes = React.createRef();
     }
 
     findNames(name) {
         this.setState(state => ({...state, names:[], searchInProgress: true}));
 
-        let sexes = [
-            {str: "boy", enabled: this.state.findBoys},
-            {str: "girl", enabled: this.state.findGirls},
-            {str: "neutral", enabled: this.state.findNeutral},
-        ].filter(obj => obj.enabled).map(obj => obj.str);
+        const sexes = this.sexCheckboxes.current.sexes();
 
         axios.get(`${apiBaseURL}/names/${name}/rating`, {params: {mode: this.state.mode, sexes: {list: sexes}, user: this.props.user}})
             .then(resp => this.setState(state => ({...state, namesWithRatings: resp.data})))
@@ -52,7 +43,7 @@ class Search extends React.Component {
         this.setState(state => ({...state, mode: mode}));
     }
 
-    handleChange(event) {
+    handleSexCheckboxChange(event) {
         const name = event.target.name;
         const checked = event.target.checked;
         this.setState(state => ({ ...state, [name]: checked }));
@@ -69,7 +60,7 @@ class Search extends React.Component {
     render() {
         const names = this.state.namesWithRatings.map(nameWithRating =>
             <NameRater
-                key={nameWithRating.name.name}
+                key={"search-" + nameWithRating.name.name}
                 name={nameWithRating.name.name}
                 sex={nameWithRating.name.sex}
                 user={this.props.user}
@@ -93,14 +84,7 @@ class Search extends React.Component {
                 </FormControl>
             </div>
             <div className={this.state.mode === "exact" ? 'hidden' : ''} >
-                <FormControl>
-                    <FormLabel>Sex</FormLabel>
-                    <FormGroup row>
-                        <FormControlLabel control={<Checkbox checked={this.state.findBoys} onChange={this.handleChange.bind(this)} name="findBoys" />} label={<FontAwesomeIcon icon={faMars}/>}/>
-                        <FormControlLabel control={<Checkbox checked={this.state.findGirls} onChange={this.handleChange.bind(this)} name="findGirls" />} label={<FontAwesomeIcon icon={faVenus}/>}/>
-                        <FormControlLabel control={<Checkbox checked={this.state.findNeutral} onChange={this.handleChange.bind(this)} name="findNeutral" />} label={<FontAwesomeIcon icon={faVenusMars}/>}/>
-                    </FormGroup>
-                </FormControl>
+                <SexCheckboxes ref={this.sexCheckboxes} />
             </div>
             <div>
                 <TextForm buttonText={"Search"} submitted={(name) => {

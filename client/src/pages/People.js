@@ -25,7 +25,7 @@ class People extends React.Component {
             names: []
         };
         this.alert = React.createRef();
-        this.fetchNames()
+        this.fetchNames();
     }
 
     fetchNames ()  {

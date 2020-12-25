@@ -1,3 +1,4 @@
+const {int} = require('neo4j-driver/lib/integer');
 const _ = require('lodash');
 
 // get a single person by name
@@ -35,8 +36,33 @@ const create = function (session, name) {
     ).then(result => result.records[0].get('person'));
 };
 
+// Next name to rate
+const nextNamesToRate = function (session, user, sexes, limit) {
+    return session.readTransaction(txc =>
+        txc.run(
+            `CYPHER runtime=slotted // Bug in pipelined if sexes=[]
+             MATCH (user:Person {name: $user}), (name:Name)
+               WHERE NOT (user)-[:RATING]->(name) AND name.sex IN $sexes
+             CALL {
+               WITH name, user
+               OPTIONAL MATCH (otherUser:Person)-[rating:RATING]->(name)
+                 WHERE otherUser <> user
+               WITH avg(rating.stars) AS avgRating
+               RETURN (CASE 
+                       WHEN avgRating IS NULL THEN 3.0
+                       ELSE avgRating
+                       END) AS avgRating
+             }
+             RETURN properties(name) AS name
+               ORDER BY avgRating DESC 
+               LIMIT $limit`,
+            {user: user, sexes: sexes, limit: int(limit)})
+    ).then(result => result.records.map(r => r.get('name')));
+};
+
 module.exports = {
     getAll: getAll,
     getByName: getByName,
-    create: create
+    create: create,
+    nextNamesToRate: nextNamesToRate
 };

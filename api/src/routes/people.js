@@ -31,3 +31,15 @@ exports.create = function (req, res, next) {
         }
       });
 };
+
+exports.nextNamesToRate = function (req, res, next) {
+    const user = req.params.name;
+    if (!user) throw {message: 'Invalid user name.', status: 400};
+    const sexes = req.query.sexes ? JSON.parse(req.query.sexes).list : undefined;
+    if (!sexes || sexes.some(sex => sex !== "boy" && sex !== "girl" && sex !== "neutral")) throw {message: `Invalid sexes: ${sexes}.`, status: 400};
+    const limit = req.query.limit ? parseInt(req.query.limit) : 100;
+
+    People.nextNamesToRate(dbUtils.getSession(req), user, sexes, limit)
+        .then(response => writeResponse(res, response))
+        .catch(next);
+};

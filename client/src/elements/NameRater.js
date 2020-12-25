@@ -31,16 +31,27 @@ class NameRater extends React.Component {
         const rating = parseInt(event.target.value);
         axios.post(`${apiBaseURL}/names/${this.props.name}/rating`, {user: this.props.user, rating: rating})
             .then(() => this.setState(state =>({...state, rating: rating})))
+            .then(() => {
+                if (this.props.handleRated) {
+                    this.props.handleRated(rating);
+                }
+            })
             .catch(this.props.handleError);
     }
 
     render() {
+        const name = this.props.big ?
+            <h1>{this.props.name} {this.iconFor(this.props.sex)}</h1>
+            : <>{this.props.name} {this.iconFor(this.props.sex)}</>;
         return (
             <div>
-                {this.props.name} {this.iconFor(this.props.sex)}
-                <Rating style={{"marginLeft": "5px"}}
+                {name}
+                <Rating
+                    name={"Name-rater-" + this.props.name}
+                    style={{"marginLeft": "5px"}}
                     value={this.state.rating}
                     onChange={this.rate.bind(this)}
+                    size={this.props.big ? "large" : "medium"}
                 />
             </div>
         );
