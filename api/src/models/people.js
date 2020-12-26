@@ -64,10 +64,10 @@ const nextNamesToRate = function (session, user, sexes, limit) {
 const matches = function (session, user, otherUser, sexes, skip, limit) {
     return session.readTransaction(txc =>
         txc.run(
-            `MATCH (user:Person {name: $user})-[myRating:RATING]->(name)<-[otherRating:RATING]-(otherUser:Person {name: $otherUser})
+            `MATCH (user:Person {name: $user})-[myRating:RATING]->(name:Name)<-[otherRating:RATING]-(otherUser:Person {name: $otherUser})
                WHERE name.sex IN $sexes
              RETURN properties(name) AS name, properties(myRating) as myRating, properties(otherRating) as otherRating
-               ORDER BY myRating.stars + otherRating.stars DESC, myRating.stars DESC
+               ORDER BY myRating.stars + otherRating.stars DESC, myRating.stars DESC, name.name
                SKIP $skip 
                LIMIT $limit`,
             {user: user, otherUser: otherUser, sexes: sexes, skip: int(skip), limit: int(limit)})
@@ -82,7 +82,7 @@ const matches = function (session, user, otherUser, sexes, skip, limit) {
 const matchesCount = function (session, user, otherUser, sexes) {
     return session.readTransaction(txc =>
         txc.run(
-            `MATCH (user:Person {name: $user})-[myRating:RATING]->(name)<-[otherRating:RATING]-(otherUser:Person {name: $otherUser})
+            `MATCH (user:Person {name: $user})-[myRating:RATING]->(name:Name)<-[otherRating:RATING]-(otherUser:Person {name: $otherUser})
                WHERE name.sex IN $sexes
              RETURN count(*) AS count`,
             {user: user, otherUser: otherUser, sexes: sexes})
