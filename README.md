@@ -29,3 +29,8 @@ This requires that a neo4j database can be found in the `neo4j` folder.
   * Start neo4j, same as above.
   * `cd api`
   * `npm test`
+  
+## Importing names
+
+You can add names one-by-one yourself or import them from a CSV file, both from within the website.
+For convenience, a list with more than 30,000 names can be found in the root directory: names.csv.
