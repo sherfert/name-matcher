@@ -54,7 +54,7 @@ const nextNamesToRate = function (session, user, sexes, limit) {
                        END) AS avgRating
              }
              RETURN properties(name) AS name
-               ORDER BY avgRating DESC 
+               ORDER BY avgRating DESC, rand()
                LIMIT $limit`,
             {user: user, sexes: sexes, limit: int(limit)})
     ).then(result => result.records.map(r => r.get('name')));
