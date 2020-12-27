@@ -146,7 +146,9 @@ class Matches extends React.Component {
                 <Pagination
                     color="primary"
                     count={this.pageCount()}
-                    siblingCount={2}
+                    siblingCount={1}
+                    hideNextButton
+                    hidePrevButton
                     page={this.state.page}
                     onChange={this.handleChangePage.bind(this)}
                 />
