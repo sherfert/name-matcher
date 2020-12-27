@@ -281,6 +281,54 @@ it("Wrong suffix search sexes type", async done => {
     done();
 });
 
+it("Contains search", async done => {
+    // GIVEN
+    await given.agent.post(`${apiPath}/names/Jonathan`).send({sex: "boy"});
+    await given.agent.post(`${apiPath}/names/Mirian`).send({sex: "girl"});
+    await given.agent.post(`${apiPath}/names/Berta`).send({sex: "girl"});
+    await given.agent.post(`${apiPath}/names/Radaman`).send({sex: "neutral"});
+    await given.agent.post(`${apiPath}/names/Fifian`).send({sex: "girl"});
+
+    // WHEN
+    const response = await given.agent.get(`${apiPath}/names/i`).query({mode: "contains", sexes: JSON.stringify({list: ["girl"]})});
+
+    // THEN
+    const actual = JSON.parse(response.text);
+    expect(actual).toStrictEqual(expect.arrayContaining([
+        {name: "Fifian", sex: "girl"},
+        {name: "Mirian", sex: "girl"},
+    ]));
+    expect(actual.length).toBe(2); // Order undefined for contains search
+    expect(response.status).toBe(200);
+    done();
+});
+
+it("Wrong contains search sexes", async done => {
+    // GIVEN
+    const sexes = ["helicopter"];
+
+    // WHEN
+    const response = await given.agent.get(`${apiPath}/names/B`).query({mode: "contains", sexes: JSON.stringify({list: sexes})});
+
+    // THEN
+    expect(JSON.parse(response.text)).toStrictEqual({"message": `Invalid sexes: ${sexes}.`});
+    expect(response.status).toBe(400);
+    done();
+});
+
+it("Wrong contains search sexes type", async done => {
+    // GIVEN
+    const sexes = [5];
+
+    // WHEN
+    const response = await given.agent.get(`${apiPath}/names/B`).query({mode: "contains", sexes: JSON.stringify({list: sexes})});
+
+    // THEN
+    expect(JSON.parse(response.text)).toStrictEqual({"message": `Invalid sexes: ${sexes}.`});
+    expect(response.status).toBe(400);
+    done();
+});
+
 it("CSV Import", async done => {
     // GIVEN
     const csvResponse = await given.agent.post(`${apiPath}/names-import`)
@@ -473,6 +521,30 @@ it("Suffix search with rating", async done => {
     done();
 });
 
+it("Contains search with rating", async done => {
+    // GIVEN
+    const user = "TheGuy"
+    await given.agent.post(`${apiPath}/people/${user}`);
+    await given.agent.post(`${apiPath}/names/Jonathan`).send({sex: "boy"});
+    await given.agent.post(`${apiPath}/names/Mirian`).send({sex: "girl"});
+    await given.agent.post(`${apiPath}/names/Berta`).send({sex: "girl"});
+    await given.agent.post(`${apiPath}/names/Radaman`).send({sex: "neutral"});
+    await given.agent.post(`${apiPath}/names/Fifian`).send({sex: "girl"});
+    await given.agent.post(`${apiPath}/names/Fifian/rating`).send({user: user, rating: 5});
+
+    // WHEN
+    const response = await given.agent.get(`${apiPath}/names/i/rating`).query({user: user, mode: "contains", sexes: JSON.stringify({list: ["girl"]})});
+
+    const actual = JSON.parse(response.text);
+    expect(actual).toStrictEqual(expect.arrayContaining([
+        {name: {name: "Fifian", sex: "girl"}, rating: {stars: 5}},
+        {name: {name: "Mirian", sex: "girl"}, rating: null},
+    ]));
+    expect(actual.length).toBe(2); // Order undefined for contains search
+    expect(response.status).toBe(200);
+    done();
+});
+
 it("No mode defaults to exact search with rating", async done => {
     // GIVEN
     const user = "TheGuy"
@@ -564,6 +636,32 @@ it("Wrong suffix search sexes type with rating", async done => {
 
     // WHEN
     const response = await given.agent.get(`${apiPath}/names/B/rating`).query({mode: "suffix", user: "User", sexes: JSON.stringify({list: sexes})});
+
+    // THEN
+    expect(JSON.parse(response.text)).toStrictEqual({"message": `Invalid sexes: ${sexes}.`});
+    expect(response.status).toBe(400);
+    done();
+});
+
+it("Wrong contains search sexes with rating", async done => {
+    // GIVEN
+    const sexes = ["helicopter"];
+
+    // WHEN
+    const response = await given.agent.get(`${apiPath}/names/B/rating`).query({mode: "contains", user: "User", sexes: JSON.stringify({list: sexes})});
+
+    // THEN
+    expect(JSON.parse(response.text)).toStrictEqual({"message": `Invalid sexes: ${sexes}.`});
+    expect(response.status).toBe(400);
+    done();
+});
+
+it("Wrong contains search sexes type with rating", async done => {
+    // GIVEN
+    const sexes = [5];
+
+    // WHEN
+    const response = await given.agent.get(`${apiPath}/names/B/rating`).query({mode: "contains", user: "User", sexes: JSON.stringify({list: sexes})});
 
     // THEN
     expect(JSON.parse(response.text)).toStrictEqual({"message": `Invalid sexes: ${sexes}.`});

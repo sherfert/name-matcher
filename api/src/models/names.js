@@ -31,6 +31,17 @@ const suffixSearch = function (session, suffix, sexes) {
     ).then(result => result.records.map(r => r.get('name')));
 };
 
+// get names by contains
+const containsSearch = function (session, chars, sexes) {
+    return session.readTransaction(txc =>
+        txc.run(
+            `MATCH (name:Name) 
+               WHERE name.name CONTAINS $chars AND name.sex IN $sexes 
+             RETURN properties(name) AS name`,
+            {chars: chars, sexes: sexes})
+    ).then(result => result.records.map(r => r.get('name')));
+};
+
 // exact search with rating
 const exactSearchWithRating = function (session, user,  name) {
     return session.readTransaction(txc =>
@@ -69,6 +80,21 @@ const suffixSearchWithRating = function (session, user, suffix, sexes) {
              OPTIONAL MATCH (user)-[rating:RATING]->(name) 
              RETURN properties(name) AS name, properties(rating) as rating`,
             {suffix: suffix, sexes: sexes, user: user})
+    ).then(result => result.records.map(r => ({
+        name: r.get('name'),
+        rating: r.get('rating')
+    })));
+};
+
+// contains search with rating
+const containsSearchWithRating = function (session, user, chars, sexes) {
+    return session.readTransaction(txc =>
+        txc.run(
+            `MATCH (user:Person {name: $user}), (name:Name)
+               WHERE name.name CONTAINS $chars AND name.sex IN $sexes 
+             OPTIONAL MATCH (user)-[rating:RATING]->(name) 
+             RETURN properties(name) AS name, properties(rating) as rating`,
+            {chars: chars, sexes: sexes, user: user})
     ).then(result => result.records.map(r => ({
         name: r.get('name'),
         rating: r.get('rating')
@@ -114,9 +140,11 @@ module.exports = {
     exactSearch: exactSearch,
     prefixSearch: prefixSearch,
     suffixSearch: suffixSearch,
+    containsSearch: containsSearch,
     exactSearchWithRating: exactSearchWithRating,
     prefixSearchWithRating: prefixSearchWithRating,
     suffixSearchWithRating: suffixSearchWithRating,
+    containsSearchWithRating: containsSearchWithRating,
     create: create,
     loadCSV: loadCSV,
     rate: rate

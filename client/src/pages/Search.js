@@ -74,6 +74,7 @@ class Search extends React.Component {
                         <FormControlLabel value="exact" control={<Radio/>} label={"Exact"}/>
                         <FormControlLabel value="prefix" control={<Radio/>} label={"Prefix"}/>
                         <FormControlLabel value="suffix" control={<Radio/>} label={"Suffix"}/>
+                        <FormControlLabel value="contains" control={<Radio/>} label={"Contains"}/>
                     </RadioGroup>
                 </FormControl>
             </div>

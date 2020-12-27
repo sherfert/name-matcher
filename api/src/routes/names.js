@@ -20,6 +20,10 @@ exports.get = function (req, res, next) {
       if(!sexes || sexes.some(sex => sex !== "boy" && sex !== "girl" && sex !== "neutral")) throw {message: `Invalid sexes: ${sexes}.`, status: 400};
       promise = Names.suffixSearch(session, name, sexes);
       break;
+    case "contains":
+      if(!sexes || sexes.some(sex => sex !== "boy" && sex !== "girl" && sex !== "neutral")) throw {message: `Invalid sexes: ${sexes}.`, status: 400};
+      promise = Names.containsSearch(session, name, sexes);
+      break;
     case "exact":
     case undefined:
       promise = Names.exactSearch(session, name);
@@ -52,6 +56,10 @@ exports.getWithRating = function (req, res, next) {
     case "suffix":
       if(!sexes || sexes.some(sex => sex !== "boy" && sex !== "girl" && sex !== "neutral")) throw {message: `Invalid sexes: ${sexes}.`, status: 400};
       promise = Names.suffixSearchWithRating(session, user, name, sexes);
+      break;
+    case "contains":
+      if(!sexes || sexes.some(sex => sex !== "boy" && sex !== "girl" && sex !== "neutral")) throw {message: `Invalid sexes: ${sexes}.`, status: 400};
+      promise = Names.containsSearchWithRating(session, user, name, sexes);
       break;
     case "exact":
     case undefined:
