@@ -7,6 +7,7 @@ import TabList from "@material-ui/lab/TabList";
 import Import from "./Import";
 import Search from "./Search";
 import Rate from "./Rate";
+import Refine from "./Refine";
 import Matches from "./Matches";
 
 class MainPage extends React.Component {
@@ -24,12 +25,14 @@ class MainPage extends React.Component {
                     <AppBar position="static">
                         <TabList onChange={(ev, val) => {this.setState(state => ({...state, tabValue: val}))}}>
                             <Tab label="Rate" value="rate" />
+                            <Tab label="Refine" value="refine" />
                             <Tab label="Search" value="search" />
                             <Tab label="Matches" value="matches" />
                             <Tab label="Import" value="import" />
                         </TabList>
                     </AppBar>
                     <TabPanel value="rate"><Rate user={this.props.user} /></TabPanel>
+                    <TabPanel value="refine"><Refine user={this.props.user} /></TabPanel>
                     <TabPanel value="search"><Search user={this.props.user} /></TabPanel>
                     <TabPanel value="matches"><Matches user={this.props.user} /></TabPanel>
                     <TabPanel value="import"><Import /></TabPanel>

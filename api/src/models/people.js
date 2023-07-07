@@ -60,6 +60,20 @@ const nextNamesToRate = function (session, user, sexes, limit) {
     ).then(result => result.records.map(r => r.get('name')));
 };
 
+// Ratings
+const ratings = function (session, user, minRating) {
+    return session.readTransaction(txc =>
+        txc.run(
+            `MATCH (user:Person {name: $user})-[rating:RATING]->(name:Name)
+               WHERE rating.stars >= $minRating
+             RETURN properties(name) AS name, properties(rating) AS rating`,
+            {user: user, minRating: int(minRating)})
+    ).then(result => result.records.map(r => ({
+        name: r.get('name'),
+        rating: r.get('rating'),
+    })));
+};
+
 // Matches
 const matches = function (session, user, otherUser, sexes, skip, limit) {
     return session.readTransaction(txc =>
@@ -94,6 +108,7 @@ module.exports = {
     getByName: getByName,
     create: create,
     nextNamesToRate: nextNamesToRate,
+    ratings: ratings,
     matches: matches,
     matchesCount: matchesCount,
 };

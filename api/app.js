@@ -48,6 +48,7 @@ api.get("/people", routes.people.list);
 api.get("/people/:name", routes.people.findByName);
 api.post("/people/:name", routes.people.create);
 api.get("/people/:name/names-to-rate", routes.people.nextNamesToRate);
+api.get("/people/:name/ratings", routes.people.ratings);
 api.get("/people/:name/matches", routes.people.matches);
 api.get("/people/:name/matchesCount", routes.people.matchesCount);
 

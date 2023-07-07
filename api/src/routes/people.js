@@ -44,6 +44,17 @@ exports.nextNamesToRate = function (req, res, next) {
         .catch(next);
 };
 
+exports.ratings = function (req, res, next) {
+    const user = req.params.name;
+    if (!user) throw {message: 'Invalid user name.', status: 400};
+    const minRating = req.query.minRating ? parseInt(req.query.minRating) : undefined;
+    if (!minRating || minRating < 1 || minRating > 5) throw {message: `Invalid minRating: ${minRating}.`, status: 400};
+
+    People.ratings(dbUtils.getSession(req), user, minRating)
+        .then(response => writeResponse(res, response))
+        .catch(next);
+};
+
 exports.matches = function (req, res, next) {
     const user = req.params.name;
     if (!user) throw {message: 'Invalid user name.', status: 400};
